@@ -1,0 +1,168 @@
+.help-guide-trigger {
+    position: fixed;
+    z-index: 1102;
+    right: 22px;
+    bottom: 22px;
+    display: grid;
+    width: 54px;
+    height: 54px;
+    place-items: center;
+    border: 2px solid #e7d2ad;
+    border-radius: 50%;
+    background: #553a25;
+    box-shadow: 0 5px 17px #21170f55;
+    color: #fff5e4;
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+}
+
+.help-guide-trigger:hover {
+    transform: translateY(-2px);
+    background: #76502e;
+}
+
+.help-guide-trigger.is-selection {
+    bottom: 88px;
+}
+
+.help-guide-trigger.is-stage-one {
+    bottom: 122px;
+}
+
+.help-guide-trigger:focus-visible,
+.help-guide-close:focus-visible {
+    outline: 3px solid #b8894f;
+    outline-offset: 3px;
+}
+
+.help-guide-backdrop {
+    position: fixed;
+    z-index: 1100;
+    inset: 0;
+    background: #24190f42;
+}
+
+.help-guide-panel {
+    position: fixed;
+    right: 22px;
+    bottom: 88px;
+    width: min(390px, calc(100vw - 32px));
+    max-height: min(72vh, 560px);
+    padding: 24px 24px 20px;
+    overflow-y: auto;
+    border: 1px solid #bda782;
+    border-radius: 7px;
+    background: #f7f0e3;
+    box-shadow: 0 15px 48px #21170f55;
+    color: #493522;
+}
+
+.help-guide-panel::after {
+    position: absolute;
+    right: 17px;
+    bottom: -9px;
+    width: 16px;
+    height: 16px;
+    border-right: 1px solid #bda782;
+    border-bottom: 1px solid #bda782;
+    background: #f7f0e3;
+    content: '';
+    transform: rotate(45deg);
+}
+
+.is-selection .help-guide-panel {
+    bottom: 154px;
+}
+
+.is-stage-one .help-guide-panel {
+    bottom: 188px;
+}
+
+.help-guide-panel .eyebrow {
+    padding-right: 30px;
+    font-size: .67rem;
+}
+
+.help-guide-panel h2 {
+    margin: 0;
+    padding-right: 24px;
+    color: #38291e;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.help-guide-panel ol {
+    display: grid;
+    gap: 12px;
+    margin: 18px 0 0;
+    padding-left: 23px;
+    color: #67533d;
+    font-size: .88rem;
+    line-height: 1.5;
+}
+
+.help-guide-panel li {
+    padding-left: 3px;
+}
+
+.help-guide-panel li::marker {
+    color: #967048;
+    font-weight: 700;
+}
+
+.help-guide-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 1px solid #cbb995;
+    border-radius: 50%;
+    background: #eee3d0;
+    color: #563a24;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .help-guide-trigger {
+        right: 15px;
+        bottom: 15px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .help-guide-trigger.is-selection {
+        bottom: 82px;
+    }
+
+    .help-guide-trigger.is-stage-one {
+        bottom: 124px;
+    }
+
+    .help-guide-panel {
+        right: 12px;
+        bottom: 77px;
+        width: calc(100vw - 24px);
+        padding: 20px 18px 18px;
+    }
+
+    .is-selection .help-guide-panel {
+        bottom: 144px;
+    }
+
+    .is-stage-one .help-guide-panel {
+        bottom: 186px;
+    }
+
+    .help-guide-panel ol {
+        font-size: .84rem;
+    }
+}
