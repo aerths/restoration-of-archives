@@ -5,7 +5,7 @@ const documents = [
     category: 'ценный',
     paperType: 'тряпичная',
     condition: 'удовлетворительное',
-    img: '',
+    img: './src/images/restartimg.jpg',
     description: 'Личное письмо на плотной бумаге с хорошо сохранившимся текстом.',
   },
   {
@@ -14,7 +14,7 @@ const documents = [
     category: 'массовый',
     paperType: 'древесная',
     condition: 'удовлетворительное',
-    img: '',
+    img: './src/images/fakeimg.jpg',
     description: 'Рабочая ведомость учреждения, недавно переданная в архив.',
   },
   {
@@ -23,7 +23,7 @@ const documents = [
     category: 'ОЦД',
     paperType: 'тряпичная',
     condition: 'ветхое',
-    img: '',
+    img: './src/images/restartimg.jpg',
     description: 'Редкий план усадьбы. Бумага пожелтела, на сгибах заметны заломы и пятна.',
   },
   {
@@ -32,7 +32,7 @@ const documents = [
     category: 'массовый',
     paperType: 'современная',
     condition: 'удовлетворительное',
-    img: '',
+    img: './src/images/restartimg.jpg',
     description: 'Современный архивный журнал в хорошем состоянии.',
   },
   {
@@ -41,7 +41,7 @@ const documents = [
     category: 'ценный',
     paperType: 'древесная',
     condition: 'удовлетворительное',
-    img: '',
+    img: './src/images/restartimg.jpg',
     description: 'Аккуратно хранившаяся опись с четкими записями.',
   },
 ];
