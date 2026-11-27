@@ -23,7 +23,7 @@ const documents = [
     category: 'ОЦД',
     paperType: 'тряпичная',
     condition: 'ветхое',
-    img: './src/images/restartimg.jpg',
+    img: './src/images/cool-docx.jpg',
     description: 'Редкий план усадьбы. Бумага пожелтела, на сгибах заметны заломы и пятна.',
   },
   {

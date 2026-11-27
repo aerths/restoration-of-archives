@@ -1,7 +1,7 @@
 const stageTwoDocuments = [
   {
     id: 1,
-    cleanImg: null,
+    cleanImg: './src/images/restartimg.jpg',
     damages: [
       { id: 'dust-1', kind: 'dust', name: 'Пыль', position: [17, 24], affectsText: true },
       { id: 'dirt-1', kind: 'dirt', name: 'Загрязнение', position: [77, 30], affectsText: true },
@@ -14,7 +14,7 @@ const stageTwoDocuments = [
   },
   {
     id: 2,
-    cleanImg: null,
+    cleanImg: './src/images/restartimg.jpg',
     damages: [
       { id: 'dust-1', kind: 'dust', name: 'Пыль', position: [24, 21], affectsText: true },
       { id: 'dirt-1', kind: 'dirt', name: 'Загрязнение', position: [74, 42], affectsText: true },
@@ -26,7 +26,7 @@ const stageTwoDocuments = [
   },
   {
     id: 3,
-    cleanImg: null,
+    cleanImg: './src/images/restartimg.jpg',
     damages: [
       { id: 'dust-1', kind: 'dust', name: 'Пыль', position: [16, 34], affectsText: true },
       { id: 'dirt-1', kind: 'dirt', name: 'Загрязнение', position: [76, 26], affectsText: true },
@@ -39,7 +39,7 @@ const stageTwoDocuments = [
   },
   {
     id: 4,
-    cleanImg: null,
+    cleanImg: './src/images/restartimg.jpg',
     damages: [
       { id: 'dust-1', kind: 'dust', name: 'Пыль', position: [19, 27], affectsText: true },
       { id: 'dirt-1', kind: 'dirt', name: 'Загрязнение', position: [81, 37], affectsText: true },
@@ -52,7 +52,7 @@ const stageTwoDocuments = [
   },
   {
     id: 5,
-    cleanImg: null,
+    cleanImg: './src/images/restartimg.jpg',
     damages: [
       { id: 'dust-1', kind: 'dust', name: 'Пыль', position: [23, 23], affectsText: true },
       { id: 'dirt-1', kind: 'dirt', name: 'Загрязнение', position: [79, 45], affectsText: true },

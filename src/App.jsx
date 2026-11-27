@@ -186,7 +186,7 @@ function Workbench({ selectedDocuments, onBack }) {
   }, [selectedDocuments]);
 
   if (showStageTwo) {
-    return <StageTwo results={results} onBack={() => setShowStageTwo(false)} />;
+    return <StageTwo results={results} onBack={() => setShowStageTwo(false)} onNewTask={() => { setShowStageTwo(false); setResults(selectedDocuments.map(createWorkbenchResult)); }} onExit={() => { setShowStageTwo(false); onBack(); }} />;
   }
 
   const updateSetting = (documentId, type, value) => {

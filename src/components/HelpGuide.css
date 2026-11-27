@@ -166,3 +166,52 @@
         font-size: .84rem;
     }
 }
+
+.help-guide-trigger {
+    border-color: #83efff;
+    background: linear-gradient(145deg, #147bc1, #152c76);
+    box-shadow: 0 0 20px #00d9ff88;
+    color: #f4ffff;
+}
+
+.help-guide-trigger:hover {
+    background: linear-gradient(145deg, #21a6e5, #294ac0);
+}
+
+.help-guide-backdrop {
+    background: #02081788;
+    backdrop-filter: blur(5px);
+}
+
+.help-guide-panel {
+    border: 1px solid #73edff;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #1264a9f5, #071d48f7);
+    box-shadow: 0 0 35px #00cfff66, 0 15px 48px #000b;
+    color: #effaff;
+}
+
+.help-guide-panel::after {
+    border-color: #73edff;
+    background: #0b3764;
+}
+
+.help-guide-panel h2,
+.help-guide-panel ol {
+    color: #f2fcff;
+}
+
+.help-guide-panel li::marker {
+    color: #8df3ff;
+}
+
+.help-guide-panel,
+.help-guide-close {
+    color: #effaff !important;
+}
+
+.help-guide-panel h2,
+.help-guide-panel ol,
+.help-guide-panel .eyebrow {
+    color: #f1fbff !important;
+}

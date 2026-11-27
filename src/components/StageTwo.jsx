@@ -10,7 +10,7 @@ import {
   InkTestStep,
   PaperRepairStep,
   StrategyStep,
-  TechCardStep,
+  DocumentCanvas,
   dryKinds,
   paperKinds,
 } from './StageTwoSteps.jsx';
@@ -24,7 +24,6 @@ const stepNames = [
   'Восстановление бумаги',
   'Сушка',
   'Итоговый снимок',
-  'Технологическая карта',
   'Сравнение и оценка',
 ];
 
@@ -59,7 +58,6 @@ function createSession(result) {
     dried: false,
     mistakes: 0,
     correctActions: 0,
-    reportErrors: 0,
     nextDamageId: 1,
   };
 }
@@ -107,7 +105,7 @@ function getSessionScore(session) {
   const paperStrength = Math.max(0, Math.min(100, Math.round(actionAccuracy - session.mistakes * 4 - remainingPaper * 8 - secondaryCount * 2)));
   const secondarySafety = Math.max(0, 100 - secondaryCount * 12);
   const strategyBonus = session.document.category === 'ОЦД' && session.strategy === 'dry' ? 15 : 0;
-  const rawScore = Math.max(0, readability + paperStrength + secondarySafety + strategyBonus - session.reportErrors * 12);
+  const rawScore = Math.max(0, readability + paperStrength + secondarySafety + strategyBonus);
   const factor = severityFactors[session.document.category] || 1;
 
   return {
@@ -128,7 +126,7 @@ function average(values) {
   return Math.round(values.reduce((total, value) => total + value, 0) / values.length);
 }
 
-function ResultsStep({ sessions, onBack }) {
+function ResultsStep({ sessions, onNewTask, onExit }) {
   const scoredSessions = sessions.map((session) => ({ session, score: getSessionScore(session) }));
   const totalScore = scoredSessions.reduce((total, item) => total + item.score.score, 0);
   const overallReadability = average(scoredSessions.map((item) => item.score.readability));
@@ -140,7 +138,7 @@ function ResultsStep({ sessions, onBack }) {
     <section className="stage2-results">
       <p className="eyebrow">Этап 2 · завершён</p>
       <h2>Реставрация завершена</h2>
-      <p className="results-intro">Снимки и технологические карты сохранены. Оценка учитывает состояние бумаги, ошибки и категорию каждого документа.</p>
+      <p className="results-intro">Снимки сохранены. Оценка учитывает состояние бумаги, ошибки и категорию каждого документа.</p>
       <div className="overall-score-card">
         <div>
           <span>Итоговый балл</span>
@@ -184,7 +182,17 @@ function ResultsStep({ sessions, onBack }) {
                 <figcaption>До</figcaption>
               </figure>
               <figure>
-                <img src={session.finalSnapshot?.image || session.cleanImg || session.document.img} alt="Документ после реставрации" />
+                {session.damages.some((damage) => damage.secondary) ? (
+                  <div className="result-document-preview">
+                    <DocumentCanvas
+                      document={session.document}
+                      damages={session.damages.filter((damage) => damage.secondary)}
+                      image={session.cleanImg}
+                    />
+                  </div>
+                ) : (
+                  <img src={session.cleanImg} alt="Документ хорошего качества после реставрации" />
+                )}
                 <figcaption>После · читаемость {score.readability}%</figcaption>
               </figure>
             </div>
@@ -195,17 +203,20 @@ function ResultsStep({ sessions, onBack }) {
           </article>
         ))}
       </div>
-      <button className="archive-button results-back-button" type="button" onClick={onBack}>Вернуться к условиям хранения</button>
+      <div className="results-actions">
+        <button className="archive-button" type="button" onClick={onNewTask}>Начать новое задание</button>
+        <button className="back-link" type="button" onClick={onExit}>Выйти</button>
+      </div>
     </section>
   );
 }
 
-export default function StageTwo({ results, onBack }) {
+export default function StageTwo({ results, onBack, onNewTask, onExit }) {
   const [sessions, setSessions] = useState(() => results.map(createSession));
   const [activeDocument, setActiveDocument] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [selectedTool, setSelectedTool] = useState(null);
-  const isResults = stepIndex === 8;
+  const isResults = stepIndex === 7;
   const session = sessions[activeDocument];
 
   const updateSession = (updater) => {
@@ -269,16 +280,14 @@ export default function StageTwo({ results, onBack }) {
 
   const captureFinal = () => updateSession((current) => ({
     ...current,
-    finalSnapshot: {
-      image: current.cleanImg || current.document.img,
-      damages: current.damages.filter((damage) => damage.status !== 'removed').map((damage) => ({ ...damage })),
+      finalSnapshot: {
+        image: current.document.img,
+        damages: current.damages.map((damage) => ({ ...damage })),
     },
   }));
 
   const runInkTest = () => {
-    const modernPaper = session.document.paperType === 'современная';
-    const dissolves = Math.random() < (modernPaper ? 0.18 : 0.72);
-    updateSession((current) => ({ ...current, inkSoluble: dissolves }));
+    updateSession((current) => ({ ...current, inkSoluble: false }));
   };
 
   const chooseStrategy = (strategy) => updateSession((current) => ({ ...current, strategy }));
@@ -290,18 +299,6 @@ export default function StageTwo({ results, onBack }) {
   }));
 
   const damageFromDrying = (name) => updateSession((current) => appendSecondaryDamage(current, name, 'deformation'));
-
-  const saveReport = (errorCount) => updateSession((current) => ({ ...current, reportErrors: errorCount }));
-
-  const finishDocument = () => {
-    setSelectedTool(null);
-    if (activeDocument < sessions.length - 1) {
-      setActiveDocument((current) => current + 1);
-      setStepIndex(0);
-      return;
-    }
-    setStepIndex(8);
-  };
 
   const paperDefects = session?.damages.filter((damage) => paperKinds.includes(damage.kind) && !damage.secondary) || [];
   const activePaperDefects = paperDefects.filter((damage) => damage.status !== 'removed');
@@ -319,6 +316,15 @@ export default function StageTwo({ results, onBack }) {
 
   const advanceStep = () => {
     setSelectedTool(null);
+    if (stepIndex === 6) {
+      if (activeDocument < sessions.length - 1) {
+        setActiveDocument((current) => current + 1);
+        setStepIndex(0);
+      } else {
+        setStepIndex(7);
+      }
+      return;
+    }
     setStepIndex((current) => current + 1);
   };
 
@@ -333,7 +339,7 @@ export default function StageTwo({ results, onBack }) {
     );
   }
 
-  const progressTotal = sessions.length * 8 + 1;
+  const progressTotal = sessions.length * 7 + 1;
   const progressValue = isResults ? progressTotal : activeDocument * 8 + stepIndex;
   const progressPercent = Math.round((progressValue / progressTotal) * 100);
 
@@ -358,7 +364,7 @@ export default function StageTwo({ results, onBack }) {
       </header>
 
       {isResults ? (
-        <ResultsStep sessions={sessions} onBack={onBack} />
+        <ResultsStep sessions={sessions} onNewTask={onNewTask} onExit={onExit} />
       ) : (
         <>
           {stepIndex === 0 && <InitialPhotoStep session={session} onCapture={captureOriginal} />}
@@ -368,10 +374,10 @@ export default function StageTwo({ results, onBack }) {
           {stepIndex === 4 && <PaperRepairStep session={session} selectedTool={selectedTool} onSelectTool={setSelectedTool} onApplyTool={applyPaperTool} />}
           {stepIndex === 5 && <DryingStep onWrongTool={damageFromDrying} onDryComplete={markDried} />}
           {stepIndex === 6 && <FinalPhotoStep session={session} readability={getTextReadability(session)} onCapture={captureFinal} />}
-          {stepIndex === 7 && <TechCardStep session={session} onCheck={saveReport} onContinue={finishDocument} />}
+          
           {stepIndex < 7 && (
             <footer className="stage2-action-bar">
-              <span>Шаг {stepIndex + 1} из 8 · документ {activeDocument + 1} из {sessions.length}</span>
+              <span>Шаг {stepIndex + 1} из 7 · документ {activeDocument + 1} из {sessions.length}</span>
               <button className="archive-button" type="button" disabled={!canContinue} onClick={advanceStep}>
                 Продолжить <span aria-hidden="true">→</span>
               </button>

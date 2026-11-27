@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Orbitron:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 :root {
     font-family: 'DM Sans', sans-serif;
@@ -14,7 +14,8 @@
 body {
     margin: 0;
     min-width: 320px;
-    background: radial-gradient(ellipse at top, #f5eddd 0, #e9dfca 70%);
+    background-image: url(./images/big-backimg.jpg);
+    /* background: radial-gradient(ellipse at top, #f5eddd 0, #e9dfca 70%); */
 }
 
 button {
@@ -165,6 +166,7 @@ h1 {
 .choice-button:hover {
     background: #e4d5bb;
 }
+
 
 .keep-button.selected {
     border-color: #77736a;
@@ -685,4 +687,252 @@ h1 {
         width: 95%;
         padding: 14px;
     }
+}
+
+/* Космическая интерфейсная тема: фон страницы остаётся пользовательским. */
+:root {
+    font-family: 'Rajdhani', 'DM Sans', sans-serif;
+    color: #eaf7ff;
+}
+
+body {
+    background-image: url(./images/big-backimg.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+h1,
+.document-card h2,
+.workbench-item h2,
+.modal-window h2,
+.restoration-card h2,
+.result-item h2 {
+    font-family: 'Orbitron', 'DM Sans', sans-serif;
+    letter-spacing: .03em;
+}
+
+.page-shell {
+    position: relative;
+    isolation: isolate;
+}
+
+.page-shell::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(180deg, #061b3a33, #020b1ccc);
+    content: '';
+    pointer-events: none;
+}
+
+.eyebrow,
+.card-kicker {
+    color: #79eaff;
+    text-shadow: 0 0 12px #16cfff88;
+}
+
+h1 {
+    color: #f4fbff;
+    text-shadow: 0 0 20px #22bfff80;
+}
+
+.intro,
+.placeholder-note,
+.empty-note {
+    color: #d2eaff;
+}
+
+.document-card,
+.restoration-card,
+.result-item,
+.restoration-step,
+.stage2-results {
+    border: 1px solid #6eeaffaa;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #123f70d9, #071d42e8);
+    box-shadow: 0 0 0 1px #266ba944 inset, 0 16px 45px #02081799, 0 0 26px #16bfff26;
+    color: #eaf7ff;
+}
+
+.document-card h2,
+.restoration-card h2,
+.result-item h2,
+.document-facts dd,
+.document-info dd,
+.stage2-header h1,
+.stage2-results > h2,
+.step-heading h2,
+.snapshot-card h3,
+.ink-test-card h3,
+.tool-side-panel h3,
+.drying-options h3,
+.final-photo-prompt h3 {
+    color: #f1fbff;
+}
+
+.document-preview {
+    border: 1px solid #61e8ff99;
+    border-radius: 12px;
+    background: #09234a;
+    box-shadow: 0 0 17px #00cfff2b inset;
+}
+
+.choice-button,
+.fix-button,
+.archive-button,
+.continue-button {
+    border: 1px solid #5ceaff;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1577c7, #0c368b);
+    color: #f4fdff;
+    box-shadow: 0 0 14px #00cfff44 inset, 0 0 10px #00cfff2b;
+    text-shadow: 0 1px 5px #00152e;
+}
+
+.choice-button:hover,
+.restore-button:hover,
+.restore-button.selected,
+.continue-button:hover:not(:disabled),
+.fix-button:hover:not(:disabled),
+.archive-button:hover:not(:disabled) {
+    border-color: #d2fbff;
+    background: linear-gradient(135deg, #1b9be3, #2855c4);
+    box-shadow: 0 0 22px #1ce7ff99;
+}
+
+.keep-button.selected,
+.fix-button:disabled,
+.continue-button:disabled {
+    border-color: #6f9fb7;
+    background: #25476d;
+    color: #b8d4e5;
+}
+
+.action-bar,
+.stage2-action-bar {
+    border-top: 1px solid #62eaffaa;
+    background: #03142beF;
+    box-shadow: 0 -8px 25px #02081799;
+}
+
+.marked-count,
+.stage2-action-bar,
+.stage2-action-bar > span {
+    color: #e7f8ff;
+}
+
+.modal-backdrop {
+    background: #020817cc;
+    backdrop-filter: blur(7px);
+}
+
+.modal-window {
+    border: 1px solid #6eeaff;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #1265a9ed, #071d48f2);
+    box-shadow: 0 0 0 1px #48cfff55 inset, 0 0 45px #00bfff66, 0 25px 80px #000b;
+    color: #effaff;
+}
+
+.modal-close,
+.help-guide-close {
+    border-color: #7eeeff;
+    background: #17558e;
+    color: #f2fdff;
+    box-shadow: 0 0 12px #00d9ff77;
+}
+
+.document-info,
+.snapshot-card,
+.tool-side-panel,
+.drying-options,
+.damage-legend,
+.comparison-card,
+.ink-test-card,
+.strategy-card,
+.tech-card-form {
+    border: 1px solid #6eeaff88;
+    border-radius: 14px;
+    background: #0b3764d9;
+    color: #e7f7ff;
+    box-shadow: 0 0 20px #00bfff1f inset;
+}
+
+.document-info > p:last-child,
+.document-info dt,
+.document-info dd,
+.step-heading > p:last-child,
+.stage2-document-title,
+.canvas-caption,
+.interaction-hint,
+.damage-legend ul,
+.snapshot-card > p:not(.card-kicker, .snapshot-stamp),
+.damage-list,
+.tool-description,
+.strategy-card span,
+.strategy-card em,
+.results-intro,
+.document-score-note {
+    color: #c9e9f7;
+}
+
+.modal-image,
+.photo-document-panel,
+.work-document-panel {
+    border-color: #62eaff88;
+    background: #061b3b;
+}
+
+.back-link,
+.back-button {
+    color: #8ceeff;
+}
+
+.back-link:hover,
+.back-button:hover {
+    color: #ffffff;
+}
+
+/* Финальный контраст для всех общих карточек и состояний. */
+.document-card,
+.restoration-card,
+.result-item,
+.workbench-item {
+    background: linear-gradient(145deg, #123f70f2, #071d42f5) !important;
+    color: #eaf7ff !important;
+}
+
+.choice-button,
+.document-info,
+.modal-window,
+.modal-close,
+.fix-button,
+.fix-button:disabled {
+    color: #effaff !important;
+}
+
+.document-info,
+.modal-window {
+    background: linear-gradient(145deg, #1265a9f5, #071d48f7) !important;
+}
+
+.document-info > p:last-child,
+.document-info dt,
+.document-info dd,
+.document-facts dt,
+.document-facts dd,
+.result-state,
+.result-settings,
+.penalties,
+.no-penalties,
+.placeholder-note,
+.empty-note {
+    color: #d8f1ff !important;
+}
+
+.document-facts,
+.modal-image,
+.document-preview {
+    border-color: #61e8ff88;
 }

@@ -10,7 +10,7 @@ export function DefectMarker({ damage, onClick, onDrop }) {
 
   return (
     <button
-      className={`defect-marker defect-${damage.kind} ${damage.status === 'softened' ? 'is-softened' : ''}`}
+      className={`defect-marker defect-${damage.kind} ${damage.source === 'stage1' ? 'marker-stage1' : ''} ${damage.status === 'softened' ? 'is-softened' : ''}`}
       style={{ left: `${left}%`, top: `${top}%` }}
       type="button"
       disabled={isRemoved || (!onClick && !onDrop)}
@@ -33,6 +33,7 @@ export function DocumentCanvas({
   document,
   damages,
   image,
+  cleanImage,
   interactive = false,
   onDamageClick,
   onToolDrop,
@@ -43,6 +44,27 @@ export function DocumentCanvas({
   return (
     <div className="stage2-document-canvas">
       <img src={image || document.img} alt={`Документ «${document.title}»`} />
+      {cleanImage && damages.filter((damage) => damage.status === 'removed').map((damage) => {
+        const x = damage.x ?? damage.position?.[0] ?? 50;
+        const y = damage.y ?? damage.position?.[1] ?? 50;
+        const radius = damage.radius || 4;
+        return (
+          <div
+            className="restored-window"
+            key={`restored-${damage.id}`}
+            aria-label={`Восстановлен участок: ${damage.name}`}
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              width: `${radius * 2}%`,
+              height: `${radius * 2}%`,
+              backgroundImage: `url(${cleanImage})`,
+              backgroundSize: `${100 / (radius * 2)}% ${100 / (radius * 2)}%`,
+              backgroundPosition: `${((x - radius) / (100 - radius * 2)) * 100}% ${((y - radius) / (100 - radius * 2)) * 100}%`,
+            }}
+          />
+        );
+      })}
       <div className="document-texture" aria-hidden="true" />
       {visibleDamages.map((damage) => (
         <DefectMarker
@@ -53,6 +75,20 @@ export function DocumentCanvas({
         />
       ))}
     </div>
+  );
+}
+
+function DamageLegend({ hasStageOneDamages = false }) {
+  return (
+    <aside className="damage-legend" aria-label="Условные обозначения">
+      <h3>Условные обозначения</h3>
+      <ul>
+        <li><span className="legend-dot legend-yellow" />Жёлтые кружки — засохший клей</li>
+        <li><span className="legend-dot legend-gray" />Серые кружки — торчащие нитки</li>
+        <li><span className="legend-dot legend-white" />Белые кружки — разрыв или утрата бумаги</li>
+        {hasStageOneDamages && <li><span className="legend-dot legend-red" />Красные точки — повреждения, полученные из-за настроек на Этапе 1</li>}
+      </ul>
+    </aside>
   );
 }
 
@@ -180,6 +216,7 @@ export function DryCleaningStep({ session, selectedTool, onSelectTool, onApplyTo
           <DocumentCanvas
             document={session.document}
             damages={session.damages}
+            cleanImage={session.cleanImg}
             interactive
             onDamageClick={(damageId) => selectedTool && onApplyTool(selectedTool, damageId)}
           />
@@ -188,6 +225,7 @@ export function DryCleaningStep({ session, selectedTool, onSelectTool, onApplyTo
         <aside className="tool-side-panel">
           <h3>Инструменты</h3>
           <ToolPalette tools={tools} selectedTool={selectedTool} onSelect={onSelectTool} />
+          <DamageLegend hasStageOneDamages={session.damages.some((damage) => damage.source === 'stage1')} />
           <p className="interaction-hint">Сначала выберите инструмент, затем нажмите на соответствующую точку.</p>
         </aside>
       </div>
@@ -259,6 +297,7 @@ export function PaperRepairStep({ session, selectedTool, onSelectTool, onApplyTo
           <DocumentCanvas
             document={session.document}
             damages={session.damages}
+            cleanImage={session.cleanImg}
             interactive
             onDamageClick={(damageId) => selectedTool && onApplyTool(selectedTool, damageId)}
             onToolDrop={onApplyTool}
@@ -268,6 +307,7 @@ export function PaperRepairStep({ session, selectedTool, onSelectTool, onApplyTo
         <aside className="tool-side-panel">
           <h3>Палитра реставратора</h3>
           <ToolPalette tools={tools} selectedTool={selectedTool} onSelect={onSelectTool} disabledTools={disabledTools} />
+          <DamageLegend hasStageOneDamages={session.damages.some((damage) => damage.source === 'stage1')} />
           {session.strategy !== 'water' && (
             <p className="warning-note compact-note">Салфетка недоступна при сухой стратегии. Чтобы работать с клеем водой, вернитесь к стратегии и выберите водный метод.</p>
           )}
@@ -348,7 +388,7 @@ export function FinalPhotoStep({ session, readability, onCapture }) {
           description="Сделайте второй снимок. Он будет сопоставлен с неизменённым исходным состоянием."
         />
         <div className="final-photo-prompt">
-          <DocumentCanvas document={session.document} damages={session.damages} />
+          <DocumentCanvas document={session.document} damages={session.damages} cleanImage={session.cleanImg} />
           <div>
             <p className="card-kicker">После реставрации</p>
             <h3>{session.document.title}</h3>
@@ -378,7 +418,7 @@ export function FinalPhotoStep({ session, readability, onCapture }) {
         </article>
         <article className="comparison-card is-after">
           <div className="comparison-title"><span>02</span><h3>После реставрации</h3></div>
-          <DocumentCanvas document={session.document} damages={session.finalSnapshot.damages} image={endImage} />
+           <DocumentCanvas document={session.document} damages={session.finalSnapshot.damages} image={endImage} cleanImage={session.cleanImg} />
           <DamageList damages={session.finalSnapshot.damages} />
         </article>
       </div>
@@ -387,81 +427,6 @@ export function FinalPhotoStep({ session, readability, onCapture }) {
         <strong>{readability}%</strong>
         <div className="readability-track"><span style={{ width: `${readability}%` }} /></div>
       </div>
-    </section>
-  );
-}
-
-const categoryOptions = ['массовый', 'ценный', 'ОЦД'];
-const paperOptions = ['тряпичная', 'древесная', 'современная'];
-
-export function TechCardStep({ session, onCheck, onContinue }) {
-  const [category, setCategory] = useState(session.document.category);
-  const [paper, setPaper] = useState(session.document.paperType);
-  const [waterUsed, setWaterUsed] = useState(session.waterUsed ? 'yes' : 'no');
-  const [hadErrors, setHadErrors] = useState(session.damages.some((damage) => damage.secondary) ? 'yes' : 'no');
-  const [feedback, setFeedback] = useState(null);
-
-  const submitCard = (event) => {
-    event.preventDefault();
-    const errors = [
-      category !== session.document.category,
-      paper !== session.document.paperType,
-      (waterUsed === 'yes') !== session.waterUsed,
-      (hadErrors === 'yes') !== session.damages.some((damage) => damage.secondary),
-      session.document.category === 'ОЦД' && waterUsed === 'yes' && session.strategy !== 'water',
-    ].filter(Boolean).length;
-    onCheck(errors);
-    if (errors) {
-      setFeedback(`Найдены ошибки в карточке: ${errors}. Запись сохранена с замечаниями.`);
-      return;
-    }
-    setFeedback('Карточка заполнена верно и отправлена на хранение.');
-    onContinue();
-  };
-
-  return (
-    <section className="restoration-step">
-      <StepHeading
-        eyebrow="Шаг 8 · технологическая карта"
-        title="Заполните запись для архива"
-        description="Сверьте данные с ходом работы и отправьте карточку на хранение."
-      />
-      <form className="tech-card-form" onSubmit={submitCard}>
-        <label>
-          <span>Категория документа</span>
-          <select value={category} onChange={(event) => setCategory(event.target.value)}>
-            {categoryOptions.map((option) => <option key={option} value={option}>{option}</option>)}
-          </select>
-        </label>
-        <label>
-          <span>Тип бумаги</span>
-          <select value={paper} onChange={(event) => setPaper(event.target.value)}>
-            {paperOptions.map((option) => <option key={option} value={option}>{option}</option>)}
-          </select>
-        </label>
-        <label>
-          <span>Использовались ли водные методы?</span>
-          <select value={waterUsed} onChange={(event) => setWaterUsed(event.target.value)}>
-            <option value="no">Нет</option>
-            <option value="yes">Да</option>
-          </select>
-        </label>
-        <label>
-          <span>Были ли ошибки?</span>
-          <select value={hadErrors} onChange={(event) => setHadErrors(event.target.value)}>
-            <option value="no">Нет</option>
-            <option value="yes">Да</option>
-          </select>
-        </label>
-        <button className="archive-button" type="submit">Отправить на хранение</button>
-        {feedback && (
-          <p className={`report-feedback ${feedback.startsWith('Найдены') ? 'has-errors' : ''}`} role="status">
-            {feedback}
-            {feedback.startsWith('Найдены') && <button className="text-button" type="button" onClick={onContinue}>Продолжить с замечаниями</button>}
-          </p>
-        )}
-      </form>
-      <p className="form-footnote">Значения предварительно заполнены данными документа. Ошибка в карте уменьшит итоговый балл.</p>
     </section>
   );
 }
